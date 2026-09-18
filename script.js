@@ -119,59 +119,69 @@ document.getElementById('successImage').addEventListener('change', function (e) 
     reader.readAsDataURL(file);
 });
 
+// Adsgram uchun global kontroller
+let adController = null;
+
 function generateLink() {
     const bg = document.getElementById('bgColor').value;
-
     const qInput = document.getElementById('questionText').value.trim();
     const sInput = document.getElementById('successText').value.trim();
 
-    // Barcha maydonlar to'ldirilganligini tekshirish
     if (!qInput || !sInput || !base64Image) {
         alert("Iltimos, barcha maydonlarni (savol, tabrik so'zi va rasm) to'ldiring!");
-        return; // Agar to'ldirilmagan bo'lsa, pastdagi kod ishlamaydi va link bermaydi
+        return;
     }
 
-    // Natija oynasini ko'rsatmasdan avval tugmani yuklanayotgan holatga o'tkazamiz
+    // Adsgram Block ID (Reklama maydoningiz kodi)
+    const adsgramBlockId = "48506";
+
+    // Agar Kutubxona yuklangan va ID o'zgartirilgan bo'lsa reklamani yoqamiz
+    if (window.Adsgram && adsgramBlockId !== "SIZNING_BLOCK_ID_SHU_YERGA_YOZILADI") {
+        if (!adController) {
+            adController = window.Adsgram.init({ blockId: adsgramBlockId });
+        }
+        adController.show().then((result) => {
+            // Odam reklamani to'liq ko'rdi
+            processLinkGeneration(bg, qInput, sInput);
+        }).catch((result) => {
+            // Reklamani o'tkazib yubordi yoki yopib qo'ydi
+            alert("Havola yaratish uchun videoreklamani oxirigacha ko'rishingiz shart!");
+        });
+    } else {
+        // Hali ADSGRAM ID si yozilmagan bo'lsa (Test paytida muammosiz ishlashi uchun)
+        processLinkGeneration(bg, qInput, sInput);
+    }
+}
+
+function processLinkGeneration(bg, qInput, sInput) {
     const generateBtn = document.getElementById('generateBtn');
     generateBtn.textContent = "Yuklanmoqda... Kuting";
     generateBtn.disabled = true;
 
-    // Tasodifiy 5 ta harf/raqamdan iborat ID yaratamiz (siz so'ragandek 5 ta belgi)
     const shortId = Math.random().toString(36).substring(2, 7);
+    const payload = { bg: bg, q: qInput, s: sInput, i: base64Image };
 
-    // Ma'lumotlarni yig'amiz
-    const payload = {
-        bg: bg,
-        q: qInput,
-        s: sInput,
-        i: base64Image
-    };
-
-    // ImgBB API o'rniga, KVDB JSON xotirasiga yuboramiz
     fetch(`https://kvdb.io/P7FivFvrixogSx4srMSjJU/${shortId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
     })
         .then(() => {
-            // Muvaffaqiyatli saqlandi! Endi atigi 5 ta belgili juda qisqa link beramiz
             const params = new URLSearchParams();
             params.set('id', shortId);
-
             const link = window.location.href.split('?')[0] + '?' + params.toString();
             document.getElementById('generatedLink').value = link;
 
-            // Endi formani yashirib, to'lov oynasiga o'tamiz
             document.getElementById('form-content').style.display = 'none';
             document.getElementById('paymentContainer').style.display = 'flex';
 
-            generateBtn.textContent = "Link yaratish";
+            generateBtn.textContent = "Sovg'ani Yaratish 🎁";
             generateBtn.disabled = false;
         })
         .catch(error => {
-            generateBtn.textContent = "Link yaratish";
+            generateBtn.textContent = "Sovg'ani Yaratish 🎁";
             generateBtn.disabled = false;
-            alert("Internet bilan bog'lanishda xatolik yuz berdi!");
+            alert("Internet bilan bog'lanishda xatolik yuz berdi! Qayta urinib ko'ring.");
             console.error(error);
         });
 }
