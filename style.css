@@ -1,0 +1,396 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Outfit', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px 0;
+    background-color: #ffe6eb;
+    background-image: url('data:image/svg+xml;utf8,<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><path d="M40 58l-5.5-5.2C22 41 15 35 15 27.5 15 20.6 20.6 15 27.5 15c4 0 7.8 1.9 10 4.9 2.2-3 6-4.9 10-4.9 6.9 0 12.5 5.6 12.5 12.5 0 7.5-7 13.5-19.5 25.3L40 58z" fill="rgba(255, 42, 95, 0.2)"/></svg>');
+    background-size: 80px 80px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: relative;
+    transition: background 0.5s ease;
+}
+
+/* Glassmorphism Card */
+.glass-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 32px 0 rgba(255, 100, 150, 0.2);
+    border-radius: 24px;
+    padding: 30px 20px;
+    text-align: center;
+    width: 92%;
+    max-width: 450px;
+    margin: 20px auto;
+    z-index: 10;
+}
+
+/* Generator Form */
+#generator-view {
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+}
+#generator-view.active {
+    display: flex;
+}
+
+/* Custom Scrollbar for Generator */
+#generator-view::-webkit-scrollbar {
+    width: 6px;
+}
+#generator-view::-webkit-scrollbar-thumb {
+    background: rgba(255, 42, 95, 0.5);
+    border-radius: 10px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    gap: 5px;
+}
+.input-group label {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+}
+.input-group input[type="text"],
+.input-group input[type="url"] {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.6);
+    outline: none;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+.input-group input:focus {
+    background: rgba(255,255,255,0.9);
+    border-color: #ff2a5f;
+}
+.input-group input[type="color"] {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+    padding: 0;
+}
+
+
+
+.btn {
+    padding: 14px 24px;
+    border-radius: 100px;
+    border: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn-primary {
+    background: #ff1461;
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 20, 97, 0.4);
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 20, 97, 0.6);
+}
+
+/* ===== INTRO VIEW (CSS GIFT BOX) ===== */
+.gift-wrapper {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    cursor: pointer;
+    animation: bounceTwice 3s infinite;
+}
+.box-body {
+    position: absolute;
+    bottom: 0;
+    left: 15px;
+    width: 120px;
+    height: 100px;
+    background: #ff5e7e;
+    border-radius: 5px;
+    box-shadow: inset -10px 0 20px rgba(0,0,0,0.15);
+    z-index: 1;
+}
+.box-body::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 25px;
+    height: 100%;
+    background: #ffd700;
+}
+.box-lid {
+    position: absolute;
+    bottom: 95px;
+    left: 5px;
+    width: 140px;
+    height: 35px;
+    background: #ff335c;
+    border-radius: 5px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    z-index: 2;
+    transition: transform 0.6s ease-in, opacity 0.4s ease-in;
+}
+.box-lid::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 25px;
+    height: 100%;
+    background: #ffd700;
+}
+.bow {
+    position: absolute;
+    top: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    transition: all 0.5s ease;
+}
+.bow-left, .bow-right {
+    width: 35px;
+    height: 35px;
+    border: 6px solid #ffd700;
+    border-radius: 50% 50% 0 50%;
+    transform: rotate(45deg);
+}
+.bow-right {
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+}
+.gift-text {
+    font-size: 20px;
+    color: #a47676;
+    font-weight: 600;
+    font-family: serif;
+    z-index: 5;
+}
+
+/* Animations */
+@keyframes bounceTwice {
+    0%, 80%, 100% { transform: translateY(0); }
+    85% { transform: translateY(-25px); }
+    90% { transform: translateY(0); }
+    95% { transform: translateY(-12px); }
+}
+
+.gift-wrapper.opening {
+    animation: glowOpen 1s forwards 0.4s;
+}
+.gift-wrapper.opening .box-lid {
+    transform: translateY(-80px) rotate(15deg);
+    opacity: 0;
+}
+.gift-wrapper.opening .bow {
+    transform: translateX(-50%) scale(1.5) rotate(180deg);
+    opacity: 0;
+}
+
+@keyframes glowOpen {
+    0% { transform: scale(1); opacity: 1; filter: drop-shadow(0 0 0px #fff); }
+    40% { transform: scale(1.3); opacity: 1; filter: drop-shadow(0 0 50px #fff); }
+    100% { transform: scale(15); opacity: 0; filter: drop-shadow(0 0 200px #fff); }
+}
+
+.result-link-container {
+    margin-top: 15px;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+}
+.result-link-container input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid #ff1461;
+    font-size: 0.9rem;
+    background: white;
+    color: #333;
+}
+
+/* Animated SVG Checkmark for Success Screen */
+.checkmark {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: block;
+  stroke-width: 3;
+  stroke: #ff1461;
+  stroke-miterlimit: 10;
+  margin: 10px auto;
+  box-shadow: inset 0px 0px 0px #ff1461;
+  animation: fillCheck .4s ease-in-out .4s forwards, scaleCheck .3s ease-in-out .9s both;
+}
+.checkmark__circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 3;
+  stroke-miterlimit: 10;
+  stroke: #ff1461;
+  fill: none;
+  animation: strokeCheck 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+.checkmark__check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: strokeCheck 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+@keyframes strokeCheck {
+  100% { stroke-dashoffset: 0; }
+}
+@keyframes scaleCheck {
+  0%, 100% { transform: none; }
+  50% { transform: scale3d(1.1, 1.1, 1); }
+}
+@keyframes fillCheck {
+  100% { box-shadow: inset 0px 0px 0px 35px rgba(255, 20, 97, 0.1); }
+}
+
+/* Proposal View */
+#proposal-view {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: transparent;
+}
+#proposal-view.active {
+    display: flex;
+}
+
+.question-text {
+    font-size: clamp(1.5rem, 6vw, 2.2rem);
+    color: #b5003b;
+    font-weight: 800;
+    margin-bottom: 40px;
+    line-height: 1.3;
+}
+
+.buttons-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+    min-height: 60px;
+    width: 100%;
+}
+
+.btn-yes {
+    background: #ff1461;
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 20, 97, 0.4);
+    z-index: 2;
+    flex-shrink: 0;
+}
+.btn-no {
+    background: white;
+    color: #ff1461;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+    flex-shrink: 0;
+}
+
+/* Custom File Upload Button */
+.file-upload-wrapper {
+    position: relative;
+    width: 100%;
+    margin-top: 5px;
+}
+.file-upload-input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+.file-upload-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #fcf9f2;
+    border: 2px dashed #ff1461;
+    border-radius: 12px;
+    text-align: center;
+    color: #ff1461;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    z-index: 1;
+}
+.file-upload-wrapper:hover .file-upload-button {
+    background-color: #ffe6ee;
+}
+
+/* Success View */
+#success-view {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: 20;
+    padding: 20px;
+}
+#success-view.active {
+    display: flex;
+    animation: fadeIn 1s ease forwards;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.success-text {
+    font-size: clamp(2rem, 8vw, 3.5rem);
+    color: white;
+    font-weight: 800;
+    text-shadow: 0 4px 20px rgba(255, 20, 97, 0.4);
+    margin-bottom: 30px;
+}
+.success-image {
+    max-width: 100%;
+    max-height: 40vh;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    object-fit: contain;
+}

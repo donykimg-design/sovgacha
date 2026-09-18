@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Romantika</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Generator View -->
+    <div id="generator-view" class="glass-card active">
+
+        <!-- Form Content -->
+        <div id="form-content" style="display: flex; flex-direction: column; gap: 15px;">
+            <h2>O'zingizning sahifangizni yarating</h2>
+            <p style="margin-bottom: 20px; font-size: 0.9rem; color: #555;">Ma'lumotlarni to'ldirib o'z havolangizni
+                oling va uni kerakli insonga yuboring!</p>
+
+            <div class="input-group">
+                <label>Orqa fon rangi (Kerakli rangni tanlang):</label>
+                <div id="colorPicker"
+                    style="display: flex; justify-content: center; margin-top: 15px; margin-bottom: 10px;"></div>
+                <div style="text-align: center; margin-bottom: 10px;">
+                    <span id="colorPreviewBox"
+                        style="display: inline-block; width: 24px; height: 24px; border-radius: 50%; background: #ff9a9e; vertical-align: middle; margin-right: 5px; border: 2px solid #ddd;"></span>
+                    <span id="colorPreviewText"
+                        style="vertical-align: middle; font-weight: 600; color: #555; font-family: monospace; font-size: 16px;">#FF9A9E</span>
+                </div>
+                <input type="hidden" id="bgColor" value="#ff9a9e">
+            </div>
+
+            <div class="input-group">
+                <label for="questionText">Savol:</label>
+                <input type="text" id="questionText">
+            </div>
+
+            <div class="input-group">
+                <label for="successText">"Ha" bosilgandan keyin chiqadigan matn:</label>
+                <input type="text" id="successText">
+            </div>
+
+            <div class="input-group">
+                <label>"Ha" bosilgandan keyin chiqadigan rasm:</label>
+                <div class="file-upload-wrapper">
+                    <input type="file" id="successImage" accept="image/*" class="file-upload-input">
+                    <div class="file-upload-button" id="fileUploadBtn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                        <span id="fileNameDisplay">Rasm yuklash (Majburiy)</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="generateBtn" onclick="generateLink()" style="margin-top: 10px;">Link
+                yaratish</button>
+        </div>
+
+        <!-- Payment Container (19,990 so'm) -->
+        <div id="paymentContainer"
+            style="display: none; flex-direction: column; gap: 15px; width: 100%; align-items: center; padding: 10px 0;">
+            <h2 style="color: #ff1461; text-align: center; margin-bottom: 5px;">Havolangiz tayyor! 🎉</h2>
+            <p style="font-size: 0.95rem; color: #555; text-align: center; line-height: 1.4;">Uni reklamasiz, sof VIP
+                formatda ko'chirish va yuborish uchun xizmat haqini to'lang:</p>
+
+            <div
+                style="background: rgba(255, 255, 255, 0.7); border: 2px dashed #ff9a9e; padding: 15px; border-radius: 12px; width: 100%; text-align: center; margin: 10px 0;">
+                <h1 style="color: #333; margin: 0 0 10px 0; font-size: 1.5rem;">19,990 so'm</h1>
+                <p style="font-size: 0.85rem; color: #777; margin-bottom: 5px;">Karta raqami (Uzcard/Humo):</p>
+                <div
+                    style="background: #fff; padding: 10px; border-radius: 8px; font-weight: bold; color: #ff1461; font-family: monospace; font-size: 1.1rem; border: 1px solid #ffd1dc; display: flex; justify-content: space-between; align-items: center;">
+                    <span id="cardNumber">9860 0609 2112 2507</span>
+                    <span
+                        style="font-size: 0.8rem; background: #ff9a9e; color: white; padding: 3px 8px; border-radius: 4px; cursor: pointer;"
+                        onclick="navigator.clipboard.writeText('9860060921122507'); alert('Karta raqami nusxalandi!')">Nusxa</span>
+                </div>
+                <p style="font-size: 0.8rem; color: #777; margin-top: 8px; margin-bottom: 0;">Qabul qiluvchi: G.V
+                    (Ismingizni qo'yasiz)</p>
+            </div>
+
+            <p style="font-size: 0.85rem; color: #666; text-align: center; margin-bottom: 10px;">To'lov chekini telegram
+                botimizga yuborishingiz bilan havolangiz avtomatik taqdim etiladi.</p>
+
+            <button class="btn btn-primary" onclick="sendToTelegram()"
+                style="background: #0088cc; border: none; width: 100%; font-size: 1rem; padding: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" style="stroke: white;">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+                Tasdiqlash (Chek yuborish)
+            </button>
+        </div>
+
+        <!-- Result Content (Keyingi oyna) -->
+        <div id="resultContainer"
+            style="display: none; flex-direction: column; gap: 10px; width: 100%; align-items: center; padding: 20px 0;">
+
+            <div style="margin-bottom: 10px;">
+                <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+                    <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                </svg>
+            </div>
+
+            <h2 style="margin-bottom: 5px; color: #ff1461;">Tayyor!</h2>
+            <p style="margin-bottom: 25px; font-size: 0.95rem; color: #666;">Sizning maxsus havolangiz yaratildi.</p>
+
+            <input type="hidden" id="generatedLink">
+            <button class="btn btn-primary" id="copyBtn" onclick="copyLink()" style="width: 100%;">Nusxa olish</button>
+            <button class="btn btn-secondary" id="previewBtn" onclick="previewLink()"
+                style="width: 100%; background: #fff; color: #ff1461; border: 2px solid #ff1461;">O'zim ochib
+                ko'rish</button>
+
+            <button class="btn btn-secondary" onclick="resetForm()"
+                style="width: 100%; background: #f5f5f5; color: #555; border: 1px solid #ddd; margin-top: 15px; font-size: 0.9rem;">Yangi
+                yaratish</button>
+        </div>
+    </div>
+
+    <!-- Sovg'a oynasi (Birinchi kirganda chiqadi) -->
+    <div class="view" id="intro-view"
+        style="display: none; flex-direction: column; justify-content: center; align-items: center; height: 100vh; width: 100%; background: #fcf9f2; position: fixed; top: 0; left: 0; z-index: 100;">
+        <div class="gift-wrapper" onclick="openGift()">
+            <div class="box-lid">
+                <div class="bow">
+                    <div class="bow-left"></div>
+                    <div class="bow-right"></div>
+                </div>
+            </div>
+            <div class="box-body"></div>
+        </div>
+        <p class="gift-text" id="giftTextMsg" style="margin-top: 20px;">For you, my baby.</p>
+    </div>
+
+    <!-- Proposal View -->
+    <div id="proposal-view">
+        <div class="glass-card" id="proposal-card">
+            <h1 class="question-text" id="displayQuestion">Menga turmushga chiqishga rozimisiz?</h1>
+            <div class="buttons-container" id="btnContainer">
+                <button class="btn btn-yes" id="btnYes" onclick="acceptProposal()">Ha, albatta!</button>
+                <button class="btn btn-no" id="btnNo">Yo'q</button>
+            </div>
+        </div>
+
+        <div id="success-view">
+            <h1 class="success-text" id="displaySuccessText">Siz mening malikamsiz!</h1>
+            <img src="" id="displaySuccessImage" class="success-image" style="display: none;" alt="Success Image">
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
