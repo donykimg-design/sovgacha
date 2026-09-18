@@ -379,7 +379,7 @@ function createHearts() {
 
 function sendToTelegram() {
     const link = document.getElementById('generatedLink').value;
-    const botUsername = "sovgacha_robot"; // Shu joyga botingizni yozasiz
+    const botUsername = "Sovgachabot"; // Sizning haqiqiy botingiz
     const message = `Assalomu alaykum! Men to'lov qildim (19,990 so'm).\n\nMening maxsus VIP havolam: ${link}\n\nMana to'lov cheki:`;
     const tgUrl = `https://t.me/${botUsername}?text=${encodeURIComponent(message)}`;
     window.open(tgUrl, '_blank');
