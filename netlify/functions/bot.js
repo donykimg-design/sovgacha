@@ -29,45 +29,20 @@ exports.handler = async (event) => {
             if (msg.text === '/start') {
                 const firstName = msg.from.first_name || '';
 
-                // Avval user allaqachon a'zomi yo'qmi tekshiramiz (Aqlli Start)
-                let allSubscribed = true;
-                for (let ch of CHANNELS) {
-                    try {
-                        const chatMember = await bot.getChatMember(ch.username, msg.from.id);
-                        if (!['creator', 'administrator', 'member'].includes(chatMember.status)) {
-                            allSubscribed = false; break;
-                        }
-                    } catch (e) {
-                        allSubscribed = false; break;
+                const webAppOpts = {
+                    parse_mode: 'HTML',
+                    reply_markup: {
+                        inline_keyboard: [
+                            [{ text: "✨ Sovg'ani Yaratish (Mini App) ✨", web_app: { url: "https://sovgacha.online" } }]
+                        ]
                     }
-                }
+                };
 
-                if (allSubscribed) {
-                    // Agar a'zo bo'lib ulgurgan bo'lsa zahar qilmasdan xush kelibsiz deymiz
-                    const webAppOpts = {
-                        parse_mode: 'HTML',
-                        reply_markup: {
-                            inline_keyboard: [
-                                [{ text: "✨ Sovg'ani Yaratish (Mini App) ✨", web_app: { url: "https://sovgacha.online" } }]
-                            ]
-                        }
-                    };
-                    await bot.sendMessage(
-                        chatId,
-                        `Assalomu alaykum <b>${firstName}</b>! 👋\n\nSiz barcha majburiy kanallarimizga a'zo bo'lgansiz, xush kelibsiz!\nQuyidagi tugma orqali mutlaqo yopiq <b>Mini App</b> darchasiga kiring. 👇`,
-                        webAppOpts
-                    );
-                } else {
-                    // Agar a'zo bo'lmagan bo'lsa yana obuna so'raymiz
-                    const inline_keyboard = CHANNELS.map(ch => [{ text: `📣 ${ch.name}ga a'zo bo'lish`, url: ch.url }]);
-                    inline_keyboard.push([{ text: "✅ Tasdiqlash", callback_data: "check_sub" }]);
-
-                    await bot.sendMessage(
-                        chatId,
-                        `Assalomu alaykum <b>${firstName}</b>! 👋\n\nBizning <b>Mini App</b> xizmatimizdan foydalanish uchun quyidagi qoidalarga amal qilishingiz kerak:\n\nPastdagi ikkala kanalga to'liq a'zo bo'lib, so'ngra "Tasdiqlash" tugmasini bosing.`,
-                        { parse_mode: 'HTML', reply_markup: { inline_keyboard } }
-                    );
-                }
+                await bot.sendMessage(
+                    chatId,
+                    `Assalomu alaykum <b>${firstName}</b>! 👋\n\nQuyidagi tugma orqali <b>Mini App</b> darchasiga kiring va mo'jizangizni yarating. 👇`,
+                    webAppOpts
+                );
             } else if (msg.photo) {
                 // To'lov cheki yuborilganda
                 await bot.sendMessage(
