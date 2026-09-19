@@ -169,11 +169,13 @@ function processLinkGeneration(bg, qInput, sInput) {
         .then(() => {
             const params = new URLSearchParams();
             params.set('id', shortId);
-            const link = window.location.href.split('?')[0] + '?' + params.toString();
+            const link = window.location.origin + window.location.pathname + '?' + params.toString();
             document.getElementById('generatedLink').value = link;
 
             document.getElementById('form-content').style.display = 'none';
-            document.getElementById('paymentContainer').style.display = 'flex';
+            // Adsgram tekshiruvi uchun to'lov qismini vaqtincha chetlab o'tamiz
+            // document.getElementById('paymentContainer').style.display = 'flex';
+            document.getElementById('resultContainer').style.display = 'flex';
 
             generateBtn.textContent = "Sovg'ani Yaratish 🎁";
             generateBtn.disabled = false;
